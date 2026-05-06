@@ -448,6 +448,222 @@ select:disabled {
   margin-top: 14px;
 }
 
+.conversation-wall {
+  margin-top: 14px;
+}
+
+.conversation-layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr) 310px;
+  gap: 14px;
+}
+
+.conversation-summary,
+.conversation-main,
+.media-panel {
+  min-width: 0;
+}
+
+.conversation-summary {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+
+.conversation-stat {
+  border: 1px solid var(--line-2);
+  background: rgba(255, 255, 255, 0.035);
+  padding: 12px;
+}
+
+.conversation-stat span,
+.micro-label {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.conversation-stat strong {
+  display: block;
+  margin-top: 6px;
+  color: var(--green);
+  font-size: 31px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.hashtag-list {
+  display: grid;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.hashtag-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid rgba(63, 140, 255, 0.18);
+  background: rgba(63, 140, 255, 0.055);
+  padding: 8px 9px;
+}
+
+.hashtag-item strong,
+.hashtag-item span {
+  font-size: 12px;
+}
+
+.hashtag-item span {
+  color: var(--muted);
+}
+
+.category-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.category-tabs button {
+  min-height: 56px;
+  border: 1px solid var(--line-2);
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.035);
+  cursor: pointer;
+  text-align: left;
+  padding: 9px;
+  overflow: hidden;
+}
+
+.category-tabs button.active,
+.category-tabs button:hover {
+  color: var(--ink);
+  border-color: rgba(63, 140, 255, 0.55);
+  background: rgba(63, 140, 255, 0.11);
+}
+
+.category-tabs span,
+.category-tabs strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.category-tabs span {
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.category-tabs strong {
+  margin-top: 6px;
+  color: var(--green);
+  font-size: 13px;
+}
+
+.comment-stream {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  margin-top: 10px;
+  max-height: 460px;
+  overflow: auto;
+  padding-right: 5px;
+}
+
+.comment-item {
+  border: 1px solid var(--line-2);
+  background:
+    linear-gradient(135deg, rgba(63, 140, 255, 0.055), rgba(255, 255, 255, 0.018)),
+    rgba(0, 0, 0, 0.12);
+  padding: 11px;
+}
+
+.comment-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 9px;
+}
+
+.comment-head strong,
+.comment-head span {
+  display: block;
+}
+
+.comment-head strong {
+  font-size: 13px;
+}
+
+.comment-head span {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.comment-item p {
+  margin: 10px 0 0;
+  color: #d8e6ff;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.comment-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.comment-meta span {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.025);
+  padding: 4px 6px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.media-mosaic {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.media-tile {
+  display: grid;
+  align-content: end;
+  min-height: 92px;
+  border: 1px solid rgba(63, 140, 255, 0.22);
+  background:
+    linear-gradient(145deg, rgba(63, 140, 255, 0.48), rgba(3, 7, 16, 0.72) 44%),
+    #07101f;
+  padding: 9px;
+  overflow: hidden;
+}
+
+.media-tile.red {
+  border-color: rgba(255, 59, 59, 0.34);
+  background:
+    linear-gradient(145deg, rgba(255, 59, 59, 0.5), rgba(3, 7, 16, 0.74) 44%),
+    #160607;
+}
+
+.media-tile span,
+.media-tile small {
+  color: #cbd8ee;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.media-tile strong {
+  margin: 6px 0 4px;
+  font-size: 13px;
+}
+
 .response-studio {
   margin-top: 14px;
   overflow: visible;
@@ -821,7 +1037,8 @@ select:disabled {
 
   .metric-grid,
   .command-grid,
-  .scope-console {
+  .scope-console,
+  .conversation-layout {
     grid-template-columns: 1fr 1fr;
   }
 
@@ -831,6 +1048,10 @@ select:disabled {
 
   .studio-grid {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .conversation-main {
+    grid-column: span 2;
   }
 }
 
@@ -865,7 +1086,14 @@ select:disabled {
 
   .signal-strip,
   .studio-grid,
-  .scope-console {
+  .scope-console,
+  .conversation-layout,
+  .category-tabs,
+  .comment-stream {
     grid-template-columns: 1fr;
+  }
+
+  .conversation-main {
+    grid-column: auto;
   }
 }

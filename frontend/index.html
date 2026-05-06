@@ -149,6 +149,47 @@
           </article>
         </section>
 
+        <section class="conversation-wall panel" aria-label="Cross-platform conversation wall">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Conversation Wall</p>
+              <h2>Live comments, chats, posts, and articles behind the sentiment</h2>
+            </div>
+            <span class="status-pill">Evidence stream</span>
+          </div>
+
+          <div class="conversation-layout">
+            <aside class="conversation-summary">
+              <div class="conversation-stat">
+                <span>Source volume</span>
+                <strong id="conversationVolume">--</strong>
+              </div>
+              <div class="conversation-stat">
+                <span>Messages / min</span>
+                <strong id="conversationPace">--</strong>
+              </div>
+              <div class="conversation-stat">
+                <span>Platforms</span>
+                <strong id="conversationSources">--</strong>
+              </div>
+              <div>
+                <span class="micro-label">Related hashtags</span>
+                <div id="hashtagList" class="hashtag-list"></div>
+              </div>
+            </aside>
+
+            <section class="conversation-main">
+              <div id="categoryTabs" class="category-tabs" aria-label="Conversation categories"></div>
+              <div id="commentStream" class="comment-stream"></div>
+            </section>
+
+            <aside class="media-panel">
+              <span class="micro-label">Visual / media pulse</span>
+              <div id="mediaMosaic" class="media-mosaic"></div>
+            </aside>
+          </div>
+        </section>
+
         <section class="command-grid">
           <section class="panel map-panel">
             <div class="panel-head">

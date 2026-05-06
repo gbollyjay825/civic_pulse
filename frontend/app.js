@@ -13,6 +13,7 @@ let map;
 let stateLayer;
 let latestStateStats = [];
 let selectedState = "all";
+let activeConversationCategory = "all";
 const savedScope = JSON.parse(localStorage.getItem("campaignScope") || "{}");
 const campaignScope = {
   mode: savedScope.mode || "national",
@@ -230,6 +231,86 @@ function renderRecommendations(recommendations) {
     .join("");
 }
 
+function sentimentTag(sentiment) {
+  return sentiment === "negative" ? "red" : sentiment === "mixed" ? "amber" : "green";
+}
+
+function renderConversationIntel(intel) {
+  if (!intel) return;
+  qs("conversationVolume").textContent = formatNumber.format(intel.totalVolume);
+  qs("conversationPace").textContent = intel.messagesPerMinute;
+  qs("conversationSources").textContent = intel.sourceCount;
+
+  qs("hashtagList").innerHTML = intel.hashtags
+    .map(
+      (tag) => `
+      <div class="hashtag-item">
+        <strong>${tag.name}</strong>
+        <span>${formatNumber.format(tag.attention)}</span>
+      </div>
+    `,
+    )
+    .join("");
+
+  const categories = [{ name: "All", key: "all", attention: intel.totalVolume }, ...intel.categories.map((category) => ({
+    name: category.name,
+    key: category.name,
+    attention: category.attention,
+  }))];
+  if (!categories.some((category) => category.key === activeConversationCategory)) {
+    activeConversationCategory = "all";
+  }
+  qs("categoryTabs").innerHTML = categories
+    .map(
+      (category) => `
+      <button class="${category.key === activeConversationCategory ? "active" : ""}" data-category="${category.key}">
+        <span>${category.name}</span>
+        <strong>${formatNumber.format(category.attention)}</strong>
+      </button>
+    `,
+    )
+    .join("");
+
+  const stream =
+    activeConversationCategory === "all"
+      ? intel.stream
+      : intel.stream.filter((item) => item.category === activeConversationCategory);
+  qs("commentStream").innerHTML = stream
+    .slice(0, 12)
+    .map(
+      (item) => `
+      <article class="comment-item">
+        <div class="comment-head">
+          <div>
+            <strong>${item.author}</strong>
+            <span>${item.platform} · ${item.state} · ${new Date(item.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+          </div>
+          <span class="tag ${sentimentTag(item.sentiment)}">${item.emotion}</span>
+        </div>
+        <p>${item.body}</p>
+        <div class="comment-meta">
+          <span>${formatNumber.format(item.engagement)} engagements</span>
+          <span>${item.category}</span>
+          <span>${Math.round(item.confidence * 100)}% confidence</span>
+        </div>
+      </article>
+    `,
+    )
+    .join("");
+
+  qs("mediaMosaic").innerHTML = intel.media
+    .map(
+      (item) => `
+      <article class="media-tile ${sentimentTag(item.sentiment)}">
+        <span>${item.label}</span>
+        <strong>${item.topic}</strong>
+        <small>${item.platform} · ${item.state}</small>
+      </article>
+    `,
+    )
+    .join("");
+}
+
 function renderResponseStudio(studio) {
   if (!studio) return;
   qs("studioTrigger").textContent =
@@ -372,6 +453,7 @@ async function loadDashboard() {
     renderBars("emotionBars", data.summary.emotions, "emotion");
     renderEvents(data.topEvents);
     renderRecommendations(data.recommendations);
+    renderConversationIntel(data.conversationIntel);
     renderResponseStudio(data.responseStudio);
     renderTicker(data.topEvents);
   } catch (error) {
@@ -450,6 +532,10 @@ async function init() {
     if (target.matches(".assign-review")) {
       target.textContent = "In review";
       target.classList.add("is-assigned");
+    }
+    if (target.matches(".category-tabs button")) {
+      activeConversationCategory = target.getAttribute("data-category") || "all";
+      await loadDashboard();
     }
   });
   await loadDashboard();

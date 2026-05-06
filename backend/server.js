@@ -163,6 +163,78 @@ function summarize(events) {
   };
 }
 
+function buildConversationIntel(events) {
+  const slice = events.length ? events : attentionEvents;
+  const sorted = [...slice].sort((a, b) => b.attention - a.attention);
+  const totalVolume = slice.reduce((sum, event) => sum + event.attention, 0);
+  const stream = sorted.flatMap((event, index) => {
+    const baseTime = new Date(event.timestamp).getTime();
+    const persona =
+      event.sourceType === "web"
+        ? "Local desk"
+        : event.platform === "TikTok"
+          ? "Creator clip"
+          : event.platform === "Facebook"
+            ? "Community group"
+            : event.platform === "YouTube"
+              ? "Video comments"
+              : "Public post";
+    const templates = [
+      {
+        author: persona,
+        body: event.text,
+        engagement: Math.round(event.attention * 0.038),
+      },
+      {
+        author: `${event.state} signal`,
+        body: `${event.emotion} around ${event.topic.toLowerCase()} is being framed as ${event.stance}; voters are asking for proof, timeline, and accountability.`,
+        engagement: Math.round(event.attention * 0.022),
+      },
+    ];
+
+    return templates.map((item, itemIndex) => ({
+      id: `${event.id}-comment-${itemIndex + 1}`,
+      topic: event.topic,
+      category: event.narrative,
+      platform: event.platform,
+      state: event.state,
+      sentiment: event.sentiment,
+      emotion: event.emotion,
+      trust: event.trust,
+      author: item.author,
+      body: item.body,
+      engagement: item.engagement,
+      confidence: event.confidence,
+      evidenceUrl: event.evidenceUrl,
+      timestamp: new Date(baseTime + (index * 7 + itemIndex * 3) * 60000).toISOString(),
+    }));
+  });
+
+  return {
+    totalVolume,
+    messagesPerMinute: Math.max(12, Math.round(slice.reduce((sum, event) => sum + event.velocity, 0) / Math.max(slice.length, 1))),
+    sourceCount: unique(slice.map((event) => event.platform)).length,
+    categories: groupBy(slice, "narrative").slice(0, 8),
+    hashtags: groupBy(slice, "topic")
+      .slice(0, 7)
+      .map((topic) => ({
+        name: `#${topic.name.replace(/[^a-z0-9]+/gi, "")}`,
+        attention: topic.attention,
+        risk: topic.risk,
+      })),
+    media: sorted.slice(0, 10).map((event, index) => ({
+      id: `${event.id}-media`,
+      topic: event.topic,
+      platform: event.platform,
+      sentiment: event.sentiment,
+      state: event.state,
+      label: event.sourceType === "video" ? "clip" : event.sourceType === "web" ? "article" : "post",
+      imageSeed: index + event.topic.length,
+    })),
+    stream: stream.slice(0, 24),
+  };
+}
+
 function buildResponseStudio(events) {
   const slice = events.length ? events : attentionEvents;
   const lead = [...slice].sort((a, b) => b.attention - a.attention)[0];
@@ -292,6 +364,10 @@ function buildResponse(pathname, searchParams) {
     return buildResponseStudio(filtered);
   }
 
+  if (pathname === "/api/conversations") {
+    return buildConversationIntel(filtered);
+  }
+
   if (pathname === "/api/geography/state") {
     const state = searchParams.get("state") || "Lagos";
     return buildStateDetail(state);
@@ -303,6 +379,7 @@ function buildResponse(pathname, searchParams) {
       filters,
       summary: summarize(filtered),
       topEvents: filtered.sort((a, b) => b.attention - a.attention).slice(0, 8),
+      conversationIntel: buildConversationIntel(filtered),
       recommendations,
       responseStudio: buildResponseStudio(filtered),
     };
