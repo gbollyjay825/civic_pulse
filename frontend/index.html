@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Civic Pulse 2027 War Room</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="rail">
+        <div class="brand">
+          <span class="brand-mark"></span>
+          <div>
+            <strong>Civic Pulse</strong>
+            <span>2027 War Room</span>
+          </div>
+        </div>
+
+        <nav class="nav-list" aria-label="War room navigation">
+          <button class="active">Attention</button>
+          <button>Heatmap</button>
+          <button>Sentiment</button>
+          <button>Risk Room</button>
+          <button>Comms Queue</button>
+          <button>Sources</button>
+        </nav>
+
+        <div class="source-health">
+          <p>Source health</p>
+          <div><span class="dot green"></span>X stream <strong>Live</strong></div>
+          <div><span class="dot green"></span>Web/news <strong>Live</strong></div>
+          <div><span class="dot amber"></span>YouTube <strong>Lag 4m</strong></div>
+          <div><span class="dot red"></span>TikTok <strong>Partner</strong></div>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">National attention cockpit</p>
+            <h1>Where online attention is moving right now</h1>
+            <p class="headline-copy">
+              Live public signal across social, web, news, video, states, LGAs, and emerging narrative clusters.
+            </p>
+          </div>
+          <div class="ops-stack">
+            <div class="live-cluster">
+              <span class="pulse"></span>
+              <div>
+                <strong>Live intelligence</strong>
+                <span id="generatedAt">Connecting to backend...</span>
+              </div>
+            </div>
+            <div class="ops-codes">
+              <span>RAG active</span>
+              <span>Evidence linked</span>
+              <span>Human review</span>
+            </div>
+          </div>
+        </header>
+
+        <section class="scope-console" aria-label="Campaign scope configuration">
+          <div>
+            <p class="eyebrow">Campaign geography</p>
+            <strong id="scopeTitle">National Command</strong>
+            <span id="scopeCopy">Scanning all Nigerian states before drilling into hot zones.</span>
+          </div>
+          <label>
+            Room mode
+            <select id="scopeMode">
+              <option value="national">All Nigeria</option>
+              <option value="state">Single state</option>
+            </select>
+          </label>
+          <label>
+            Focus state
+            <select id="focusStateConfig"></select>
+          </label>
+        </section>
+
+        <section class="filter-row" aria-label="Attention filters">
+          <label>
+            Topic
+            <select id="topicFilter"></select>
+          </label>
+          <label>
+            State
+            <select id="stateFilter"></select>
+          </label>
+          <label>
+            Platform
+            <select id="platformFilter"></select>
+          </label>
+          <label>
+            Sentiment
+            <select id="sentimentFilter"></select>
+          </label>
+          <label>
+            Emotion
+            <select id="emotionFilter"></select>
+          </label>
+          <button id="resetFilters" class="ghost-button">Reset</button>
+        </section>
+
+        <section class="ticker" aria-label="Live alerts">
+          <strong>LIVE SIGNAL</strong>
+          <span id="tickerText">Loading attention signals...</span>
+        </section>
+
+        <section class="signal-strip" aria-label="War room status">
+          <div><span></span>National pulse online</div>
+          <div><span></span>37 state map loaded</div>
+          <div><span></span>LGA drilldown ready</div>
+          <div><span></span>Ward points modeled</div>
+        </section>
+
+        <section class="metric-grid">
+          <article class="metric-panel">
+            <span>Total attention</span>
+            <strong id="totalAttention">--</strong>
+            <p>Aggregate volume across active sources</p>
+          </article>
+          <article class="metric-panel">
+            <span>Attention velocity</span>
+            <strong id="avgVelocity">--</strong>
+            <p>Average rise rate in selected slice</p>
+          </article>
+          <article class="metric-panel">
+            <span>Signal intensity</span>
+            <strong id="avgIntensity">--</strong>
+            <p>Depth of emotion and urgency</p>
+          </article>
+          <article class="metric-panel danger">
+            <span>Red zones</span>
+            <strong id="redZones">--</strong>
+            <p>States requiring caution or review</p>
+          </article>
+        </section>
+
+        <section class="command-grid">
+          <section class="panel map-panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Geo heat</p>
+                <h2>Operational attention map</h2>
+              </div>
+              <span id="activeStateLabel" class="status-pill">National map</span>
+            </div>
+            <div id="leafletMap" class="leaflet-map" aria-label="Nigeria state attention heatmap"></div>
+            <div class="state-detail">
+              <div class="state-detail-head">
+                <div>
+                  <span id="stateDetailName">Select a state</span>
+                  <strong id="stateDetailMeta">LGA and ward attention will appear here</strong>
+                </div>
+                <button id="clearState" class="mini-button">National</button>
+              </div>
+              <div id="lgaList" class="lga-list"></div>
+            </div>
+          </section>
+
+          <section class="panel topic-panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Share of attention</p>
+                <h2>Top topics</h2>
+              </div>
+            </div>
+            <div id="topicBars" class="bars"></div>
+          </section>
+
+          <section class="panel sentiment-panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Deep sentiment</p>
+                <h2>Emotional drivers</h2>
+              </div>
+            </div>
+            <div id="emotionBars" class="bars compact"></div>
+          </section>
+
+          <section class="panel evidence-panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Evidence stream</p>
+                <h2>Top attention events</h2>
+              </div>
+            </div>
+            <div id="eventList" class="event-list"></div>
+          </section>
+
+          <section class="panel action-panel">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">War room actions</p>
+                <h2>Where to push, pause, or clarify</h2>
+              </div>
+            </div>
+            <div id="recommendations" class="recommendations"></div>
+          </section>
+        </section>
+
+        <section class="response-studio panel" aria-label="Response Studio">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Response Studio</p>
+              <h2>Ready-for-review content from the active sentiment slice</h2>
+            </div>
+            <span class="status-pill">Human approval required</span>
+          </div>
+
+          <div class="studio-grid">
+            <article class="studio-card signal-card">
+              <span>Active trigger</span>
+              <strong id="studioTrigger">Loading signal...</strong>
+              <p id="studioPosture">Waiting for attention slice.</p>
+            </article>
+
+            <article class="studio-card">
+              <span>Governance</span>
+              <div id="studioGuardrails" class="guardrails"></div>
+            </article>
+
+            <article class="studio-card oppo-card">
+              <span>Opposition / public-claim research</span>
+              <div id="oppositionResearch" class="oppo-list"></div>
+            </article>
+
+            <article class="studio-card draft-card">
+              <span>Draft queue</span>
+              <div id="contentDrafts" class="draft-list"></div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      crossorigin=""
+    ></script>
+    <script src="./app.js"></script>
+  </body>
+</html>

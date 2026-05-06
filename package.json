@@ -1,0 +1,14 @@
+{
+  "name": "civic-pulse-2027",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI-powered attention intelligence war room.",
+  "scripts": {
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "check": "node --check backend/server.js && node --check backend/vercel.js && node --check frontend/app.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
