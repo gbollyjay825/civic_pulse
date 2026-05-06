@@ -30,15 +30,15 @@
         </div>
 
         <nav class="nav-list" aria-label="War room navigation">
-          <button class="active">Attention</button>
-          <button>Heatmap</button>
-          <button>Sentiment</button>
-          <button>Risk Room</button>
-          <button>Comms Queue</button>
-          <button>Sources</button>
+          <button class="active" data-target="attentionSection">Attention</button>
+          <button data-target="heatmapSection">Heatmap</button>
+          <button data-target="sentimentSection">Sentiment</button>
+          <button data-target="riskSection">Risk Room</button>
+          <button data-target="commsSection">Comms Queue</button>
+          <button data-target="sourcesSection">Sources</button>
         </nav>
 
-        <div class="source-health">
+        <div id="sourcesSection" class="source-health">
           <p>Source health</p>
           <div><span class="dot green"></span>X stream <strong>Live</strong></div>
           <div><span class="dot green"></span>Web/news <strong>Live</strong></div>
@@ -48,7 +48,7 @@
       </aside>
 
       <main class="workspace">
-        <header class="topbar">
+        <header id="attentionSection" class="topbar">
           <div>
             <p class="eyebrow">National attention cockpit</p>
             <h1>Where online attention is moving right now</h1>
@@ -150,7 +150,7 @@
           </article>
         </section>
 
-        <section class="conversation-wall panel" aria-label="Cross-platform conversation wall">
+        <section id="sentimentSection" class="conversation-wall panel" aria-label="Cross-platform conversation wall">
           <div class="panel-head">
             <div>
               <p class="eyebrow">Conversation Wall</p>
@@ -192,7 +192,7 @@
         </section>
 
         <section class="command-grid">
-          <section class="panel map-panel">
+          <section id="heatmapSection" class="panel map-panel">
             <div class="panel-head">
               <div>
                 <p class="eyebrow">Geo heat</p>
@@ -243,7 +243,7 @@
             <div id="eventList" class="event-list"></div>
           </section>
 
-          <section class="panel action-panel">
+          <section id="riskSection" class="panel action-panel">
             <div class="panel-head">
               <div>
                 <p class="eyebrow">War room actions</p>
@@ -254,7 +254,7 @@
           </section>
         </section>
 
-        <section class="response-studio panel" aria-label="Response Studio">
+        <section id="commsSection" class="response-studio panel" aria-label="Response Studio">
           <div class="panel-head">
             <div>
               <p class="eyebrow">Response Studio</p>

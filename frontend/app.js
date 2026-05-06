@@ -14,11 +14,20 @@ let stateLayer;
 let latestStateStats = [];
 let selectedState = "all";
 let activeConversationCategory = "all";
+let navLockUntil = 0;
 const savedScope = JSON.parse(localStorage.getItem("campaignScope") || "{}");
 const campaignScope = {
   mode: savedScope.mode || "national",
   focusState: savedScope.focusState || "Lagos",
 };
+const navTargets = [
+  "attentionSection",
+  "heatmapSection",
+  "sentimentSection",
+  "riskSection",
+  "commsSection",
+  "sourcesSection",
+];
 
 function qs(id) {
   return document.getElementById(id);
@@ -128,6 +137,34 @@ function updateScopeUi() {
     ? `All attention, heat, sentiment, opposition research, and content drafts are locked to ${campaignScope.focusState}.`
     : "Scanning all Nigerian states before drilling into hot zones.";
   document.body.classList.toggle("state-room", isStateRoom);
+}
+
+function setActiveNav(targetId) {
+  document.querySelectorAll(".nav-list button").forEach((button) => {
+    button.classList.toggle("active", button.dataset.target === targetId);
+  });
+}
+
+function scrollToSection(targetId) {
+  const section = qs(targetId);
+  if (!section) return;
+  navLockUntil = Date.now() + 900;
+  section.scrollIntoView({ behavior: "smooth", block: "start" });
+  setActiveNav(targetId);
+}
+
+function syncActiveNav() {
+  if (Date.now() < navLockUntil) return;
+  const visibleTarget =
+    navTargets
+      .map((id) => {
+        const section = qs(id);
+        if (!section) return null;
+        return { id, top: Math.abs(section.getBoundingClientRect().top - 24) };
+      })
+      .filter(Boolean)
+      .sort((a, b) => a.top - b.top)[0]?.id || "attentionSection";
+  setActiveNav(visibleTarget);
 }
 
 function renderMetrics(summary) {
@@ -537,7 +574,11 @@ async function init() {
       activeConversationCategory = target.getAttribute("data-category") || "all";
       await loadDashboard();
     }
+    if (target.matches(".nav-list button")) {
+      scrollToSection(target.getAttribute("data-target"));
+    }
   });
+  window.addEventListener("scroll", syncActiveNav, { passive: true });
   await loadDashboard();
   selectedState = campaignScope.mode === "state" ? campaignScope.focusState : "all";
   await loadStateDetail(selectedState);

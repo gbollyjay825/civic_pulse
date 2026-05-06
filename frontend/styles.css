@@ -166,6 +166,15 @@ select {
   align-items: center;
 }
 
+#attentionSection,
+#heatmapSection,
+#sentimentSection,
+#riskSection,
+#commsSection,
+#sourcesSection {
+  scroll-margin-top: 18px;
+}
+
 .topbar {
   justify-content: space-between;
   gap: 24px;
