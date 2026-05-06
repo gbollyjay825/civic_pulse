@@ -56,14 +56,13 @@ select {
 }
 
 .brand-mark {
-  width: 42px;
-  height: 42px;
+  display: block;
+  width: 48px;
+  height: 48px;
   border: 1px solid rgba(63, 140, 255, 0.72);
-  background:
-    linear-gradient(90deg, transparent 47%, rgba(63, 140, 255, 0.65) 48%, rgba(63, 140, 255, 0.65) 52%, transparent 53%),
-    linear-gradient(transparent 47%, rgba(63, 140, 255, 0.65) 48%, rgba(63, 140, 255, 0.65) 52%, transparent 53%),
-    #05070d;
-  box-shadow: inset 0 0 22px rgba(63, 140, 255, 0.2), 0 0 34px rgba(63, 140, 255, 0.16);
+  background: #05070d;
+  box-shadow: 0 0 34px rgba(63, 140, 255, 0.16);
+  object-fit: cover;
 }
 
 .brand strong {
